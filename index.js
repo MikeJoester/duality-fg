@@ -7,7 +7,7 @@ const context = canvas.getContext('2d');
 canvas.width = 1600;
 canvas.height = 900;
 
-context.fillRect(0, 0, canvas.width, canvas.height);
+//context.fillRect(0, 0, canvas.width, canvas.height);
 
 const gravity = .6;
 
@@ -15,11 +15,13 @@ class Sprite {
     constructor({position, velocity}) {
         this.position = position;
         this.velocity = velocity;
+        this.width = 100;
+        this.height = 300;
     }
 
     draw() {
         context.fillStyle = 'blue';
-        context.fillRect(this.position.x, this.position.y, 50, 150);
+        context.fillRect(this.position.x, this.position.y, this.width, this.height);
     }
 
     update() {
@@ -41,7 +43,7 @@ const player = new Sprite({
 
     velocity: { 
         x: 0, 
-        y: 0
+        y: 1
     }
 });
 
@@ -53,7 +55,7 @@ const enemy = new Sprite({
     
     velocity: { 
         x: 0, 
-        y: 0
+        y: 1
     }
 });
 
@@ -68,37 +70,24 @@ const keys = {
 }
 
 function animate() { //animate the sprites
-    window.requestAnimationFrame(animate);
+    window.requestAnimationFrame(animate);    
+    
+    context.clearRect(0, 0, canvas.width, canvas.height); //clear the remaning clones
 
     context.fillStyle = 'black';
     context.fillRect(0, 0, canvas.width, canvas.height);
-    
-    context.clearRect(0, 0, canvas.width, canvas.height); //clear the remaning clones
-    
+
     player.update(); //update the player
     enemy.update(); //update the enemy
 
-    if ((keys.right.pressed) && (player.position.x < 700)) {
+    if ((keys.right.pressed) && (player.position.x < 1590)) {
         player.velocity.x = 5;
     } 
-    else if ((keys.left.pressed) && (player.position.x > 50)) {
+    else if ((keys.left.pressed) && (player.position.x > 0)) {
         player.velocity.x = -5;
     }
     else {
         player.velocity.x = 0;
-
-        if (keys.right.pressed) {
-            scrollOffset += 5;
-            platforms.forEach(platform => {
-                platform.position.x -= 5;
-            });
-        } 
-        else if (keys.left.pressed) {
-            scrollOffset -= 5;
-            platforms.forEach(platform => {
-                platform.position.x += 5;
-            });
-        }
     }
 }
 
