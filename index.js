@@ -4,28 +4,22 @@ const canvas = document.querySelector('canvas');
 
 const context = canvas.getContext('2d');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = 1600;
+canvas.height = 900;
+
+context.fillRect(0, 0, canvas.width, canvas.height);
 
 const gravity = .6;
 
-class Player {
-    constructor() {
-        this.position = {
-            x: 300,
-            y: 300
-        }
-        this.velocity = {
-            x: 0,
-            y: 0
-        }
-        this.width = 100
-        this.height = 300
+class Sprite {
+    constructor({position, velocity}) {
+        this.position = position;
+        this.velocity = velocity;
     }
 
     draw() {
         context.fillStyle = 'blue';
-        context.fillRect(this.position.x, this.position.y, this.width, this.height);
+        context.fillRect(this.position.x, this.position.y, 50, 150);
     }
 
     update() {
@@ -39,56 +33,29 @@ class Player {
     }
 }
 
-class Enemy {
-    constructor() {
-        this.position = {
-            x: 700,
-            y: 300
-        }
-        this.velocity = {
-            x: 0,
-            y: 0
-        }
-        this.width = 100
-        this.height = 300
+const player = new Sprite({
+    position: { 
+        x: 0, 
+        y: 0
+    },
+
+    velocity: { 
+        x: 0, 
+        y: 0
     }
+});
 
-    draw() {
-        context.fillStyle = 'red';
-        context.fillRect(this.position.x, this.position.y, this.width, this.height);
+const enemy = new Sprite({
+    position: { 
+        x: 400, 
+        y: 0
+    },
+    
+    velocity: { 
+        x: 0, 
+        y: 0
     }
-
-    update() {
-        this.position.y += this.velocity.y;
-        this.position.x += this.velocity.x;
-        this.draw();
-
-        if (this.position.y + this.height + this.velocity.y <= canvas.height)
-            this.velocity.y += gravity;
-        else this.velocity.y = 0;
-    }
-}
-
-class Platform {
-    constructor({x, y}) {
-        this.position = {
-            x,
-            y
-        }
-        this.width = 200;
-        this.height = 20;
-    }
-
-    draw() {
-        context.fillStyle = 'black';
-        context.fillRect(this.position.x, this.position.y, this.width, this.height);
-    }
-}
-
-const player = new Player();
-const enemy = new Enemy();
-
-const platforms = [new Platform({x: 200, y: 100}), new Platform({x: 300, y: 400})];
+});
 
 const keys = {
     right: {
@@ -100,19 +67,16 @@ const keys = {
     }
 }
 
-let scrollOffset = 0;
+function animate() { //animate the sprites
+    window.requestAnimationFrame(animate);
 
-function animate() { //animate the player
-    requestAnimationFrame(animate);
+    context.fillStyle = 'black';
+    context.fillRect(0, 0, canvas.width, canvas.height);
     
     context.clearRect(0, 0, canvas.width, canvas.height); //clear the remaning clones
     
     player.update(); //update the player
-    enemy.update();
-
-    platforms.forEach(platform => { //draw platforms
-        platform.draw();
-    });
+    enemy.update(); //update the enemy
 
     if ((keys.right.pressed) && (player.position.x < 700)) {
         player.velocity.x = 5;
@@ -135,21 +99,6 @@ function animate() { //animate the player
                 platform.position.x += 5;
             });
         }
-    }
-
-
-    //platform collision detection
-    platforms.forEach(platform => {
-        if ((player.position.y + player.height <= platform.position.y) 
-        && (player.position.y + player.height + player.velocity.y >= platform.position.y)
-        && (player.position.x + player.width >= platform.position.x)
-        && (player.position.x <= platform.position.x + platform.width)) {
-            player.velocity.y = 0;
-        }
-    });
-
-    if (scrollOffset > 1000) {
-        console.log('Stop');
     }
 }
 
