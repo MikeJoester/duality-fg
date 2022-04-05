@@ -1,3 +1,5 @@
+//import platform from 'https://png.pngitem.com/pimgs/s/461-4610714_game-platform-png-transparent-background-platform-for-game.png';
+
 const canvas = document.querySelector('canvas');
 
 const context = canvas.getContext('2d');
