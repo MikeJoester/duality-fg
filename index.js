@@ -12,19 +12,49 @@ const gravity = .6;
 class Player {
     constructor() {
         this.position = {
-            x: 100,
-            y: 100
+            x: 300,
+            y: 300
         }
         this.velocity = {
             x: 0,
             y: 0
         }
-        this.width = 50
-        this.height = 50
+        this.width = 100
+        this.height = 300
     }
 
     draw() {
         context.fillStyle = 'blue';
+        context.fillRect(this.position.x, this.position.y, this.width, this.height);
+    }
+
+    update() {
+        this.position.y += this.velocity.y;
+        this.position.x += this.velocity.x;
+        this.draw();
+
+        if (this.position.y + this.height + this.velocity.y <= canvas.height)
+            this.velocity.y += gravity;
+        else this.velocity.y = 0;
+    }
+}
+
+class Enemy {
+    constructor() {
+        this.position = {
+            x: 700,
+            y: 300
+        }
+        this.velocity = {
+            x: 0,
+            y: 0
+        }
+        this.width = 100
+        this.height = 300
+    }
+
+    draw() {
+        context.fillStyle = 'red';
         context.fillRect(this.position.x, this.position.y, this.width, this.height);
     }
 
@@ -56,6 +86,7 @@ class Platform {
 }
 
 const player = new Player();
+const enemy = new Enemy();
 
 const platforms = [new Platform({x: 200, y: 100}), new Platform({x: 300, y: 400})];
 
@@ -77,15 +108,16 @@ function animate() { //animate the player
     context.clearRect(0, 0, canvas.width, canvas.height); //clear the remaning clones
     
     player.update(); //update the player
+    enemy.update();
 
     platforms.forEach(platform => { //draw platforms
         platform.draw();
     });
 
-    if ((keys.right.pressed) && (player.position.x < 400)) {
+    if ((keys.right.pressed) && (player.position.x < 700)) {
         player.velocity.x = 5;
     } 
-    else if ((keys.left.pressed) && (player.position.x > 100)) {
+    else if ((keys.left.pressed) && (player.position.x > 50)) {
         player.velocity.x = -5;
     }
     else {
