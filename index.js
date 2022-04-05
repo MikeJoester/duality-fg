@@ -93,8 +93,8 @@ function animate() { //animate the sprites
 
 animate();
 
-window.addEventListener('keydown', ({key}) => {
-    switch(key) {
+window.addEventListener('keydown', ({keyCode}) => {
+    switch(keyCode) {
         case 65:
         case 37:
             console.log('Left');
